@@ -1,7 +1,7 @@
 ---
 url: application/add-tamper-checking-to-a-package-manager
 layout: linked-headers
-eyebrow: Trillian lets you
+eyebrow: Tessera lets you
 title: Add tamper checking to a package manager
 description: This means you can detect if a package file has been modified since it was first added to the package manager.
 topImage: top_tamper-checking.svg
@@ -111,7 +111,7 @@ Tampering with the log would cause the inclusion proof or consistency proof to f
 
 To implement this you need to build two components:
 
-1. **Hash database** (Trillian personality). This exposes the API used by the package manager, and builds on Trilian's verifiable log data structure. Roughly, the API endpoints would be:
+1. **Hash database** (log server built with Tessera). This exposes the API used by the package manager, and builds on Tessera's verifiable log data structure. Roughly, the API endpoints would be:
     * `/lookup/{package-name}-{version}` - returns the hash value of the package file along with a record number and signed tree head.
     * `/consistency-proof` - returns data required to verify that a previously-stored signed tree head exists in a later tree. This verifies that the log hasn't been tampered with since you last accessed it.
 
@@ -135,5 +135,3 @@ This is implemented in production for Go with a [checksum database](https://go.g
 * [Proposal: Secure the Public Go Module Ecosystem](https://go.googlesource.com/proposal/+/master/design/25530-sumdb.md) describes the checksum database that forms Go’s approach to this pattern.
 * [GopherCon 2019: Katie Hockman - Go Module Proxy: Life of a Query](https://www.youtube.com/watch?v=KqTySYYhPUE&t=15m0s) -
   Talk from GopherCon explaining how Go achieves 1) - talk from GopherCon explaining how Go achieves 1) reproducible builds, 2) persistent dependencies and 3) trustworthy fetches. Point 3) goes into detail about the checksum database, starting at 15:00.
-* [Rust implementation of Crate Transparency using Google Trillian](https://pretired.dazwilkin.com/posts/200429/) and [PyPi Transparency](https://pretired.dazwilkin.com/posts/190926/)
-  Daz Wilkin demonstrates building a Trillian personality to apply this pattern to Rust and Python's package managers.

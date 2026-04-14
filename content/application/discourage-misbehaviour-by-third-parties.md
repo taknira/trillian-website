@@ -8,7 +8,7 @@ Unfortunately any CA can issue a certificate for any domain (more or less). So a
 
 Fake certificates are hard to detect if they’re used in a limited, targeted way by a malicious user: no-one else sees the fake certificate, so no-one knows it exists. And the whole premise of HTTPS was weakened by sloppy CAs, so there was a big incentive to fix the problem. However, previous attempts to fix it were ineffective. CAs were passing traditional auditing of their business processes but were still mis-issuing certificates.
 
-## Certificate Transparency is built with Trillian
+## Certificate Transparency is built on verifiable logs
 
 Certificate Transparency proposed that **if all certificates had to be published openly** in order to be valid, it would:
 
@@ -18,7 +18,7 @@ Certificate Transparency proposed that **if all certificates had to be published
 
 Google led the adoption of Certificate Transparency by mandating its use in Chrome, the most popular desktop browser. Chrome checks that every certificate has been published into a Certificate Transparency Log and only accepts it if so. This forces CAs to publish their certificates.
 
-Certificate Transparency Logs use Trillian in verifiable log mode. Certificates are stored as leaves in the Merkle Tree, and the browser verifies that certificates are included in the log[^1], and that the log history hasn’t been tampered with.
+Certificate Transparency Logs use verifiable logs. Certificates are stored as leaves in the Merkle Tree, and the browser verifies that certificates are included in the log[^1], and that the log history hasn’t been tampered with.
 [Certificate Transparency has logged more than 2 billion certificates since 2013](https://certificate.transparency.dev/).
 
 [^1]: Technically, a new certificate may not yet have been incorporated into the log, which updates its Merkle tree periodically. The browser accepts a "promise" to insert the certificate (called a signed certificate timestamp, or SCT) as good enough.

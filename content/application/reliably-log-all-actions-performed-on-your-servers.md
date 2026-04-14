@@ -1,7 +1,7 @@
 ---
 url: application/reliably-log-all-actions-performed-on-your-servers
 layout: linked-headers
-eyebrow: Trillan helps you
+eyebrow: Tessera helps you
 title: Reliably log all actions performed on your servers
 description: Logging all actions in an immutable log discourages malicious behaviour by increasing the chance of discovery.
 headers:
@@ -65,7 +65,7 @@ The verifiability of the log makes it extremely difficult to tamper with the log
 ## How to implement this
 You need to create four software components:
 
-1. **Trillian personality** - to provide the external interface (API) for logging commands and querying the log with cryptographic proof. Together, Trillian and the personality make up the verifiable log in the diagram above.
+1. **Log server built with Tessera** - to provide the external interface (API) for logging commands and querying the log with cryptographic proof. Together, Tessera and the log server make up the verifiable log in the diagram above.
 2. **Submitting component** - for submitting commands to the log before they are sent to the agent.
 3. **Agent component** - for the agent to verify that received commands are in the log.
 4. **Verifiers** - to regularly check the integrity of the verifiable log, and potentially inspect log entries for malicious commands.
@@ -86,7 +86,7 @@ This use case described running commands on servers, but the same principle can 
 * You could add multi-party authentication for high risk commands. The agent component would ensure that that log received separate additional approvals before a high-risk command would be executed.
 
 ## Examples
-<strong>A payment service provider</strong> uses Trillian to log all configuration changes to hosts in their production environment. When a configuration change is received, an agent running on the host ensures that the request has been logged in their verifiable log before applying the configuration. The agents store a local copy of signed tree heads so they can cryptographically verify the integrity of the log each time they query it.
+<strong>A payment service provider</strong> uses a Tessera-based log to record all configuration changes to hosts in their production environment. When a configuration change is received, an agent running on the host ensures that the request has been logged in their verifiable log before applying the configuration. The agents store a local copy of signed tree heads so they can cryptographically verify the integrity of the log each time they query it.
 
 ## Further resources
 
