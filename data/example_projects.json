@@ -1,14 +1,14 @@
 {
   "example_projects": [
     {
-      "title": "Hello Trillian",
-      "description": "This is a basic example of how to use Trillian to implement the operations needed for a verifiable log.",
-      "url": "https://github.com/google/trillian-examples/tree/master/helloworld"
+      "title": "Tessera codelab",
+      "description": "A hands-on introduction to building a verifiable log with Tessera. Walks through implementing the core operations needed for a tile-based transparency log.",
+      "url": "https://github.com/transparency-dev/tessera/tree/main/cmd/conformance/mysql"
     },
     {
-      "title": "Log requests to post public messages",
-      "description": "Employees at your company can post to a public messaging platform ‘Tritter’. Since Tritter doesn’t support multi-login, TritBot uses Trillian to log each message request with the details of the sender in order to discourage abuse.",
-      "url": "https://github.com/mhutchinson/tritter"
+      "title": "POSIX example log",
+      "description": "A simple example of a Tessera-based log using a POSIX filesystem as storage. A great starting point for understanding how to build with Tessera.",
+      "url": "https://github.com/transparency-dev/tessera/tree/main/cmd/examples/posix-oneshot"
     }
   ]
 }
