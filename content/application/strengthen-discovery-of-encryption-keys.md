@@ -1,16 +1,16 @@
 ---
 url: application/strengthen-discovery-of-encryption-keys
 layout: linked-headers
-eyebrow: Use Trillian's Map Mode to
+eyebrow: Use a verifiable index to
 title: Strengthen discovery of encryption keys
-description: Key Transparency is a design for a tamper-evident key discovery service that providers of end-to-end encryption services could implement. Key Transparency uses Trillian's Map Mode.
+description: Key Transparency is a design for a tamper-evident key discovery service that providers of end-to-end encryption services could implement. Key Transparency uses a verifiable index to map usernames to public keys.
 headers:
    - display: "Tamper evident discovery"
      link: "key-transparency-offers-tamper-evident-key-discovery"
    - display: "Advantages"
      link: "advantages-of-key-transparency"
-   - display: "Experimental map mode"
-     link: "key-transparency-uses-trillians-experimental-map-mode"
+   - display: "Verifiable index"
+     link: "key-transparency-uses-a-verifiable-index"
    - display: "Users can check"
      link: "users-can-check-theyre-seeing-the-same-public-key"
    - display: "Misbehaviour is logged"
@@ -23,7 +23,7 @@ headers:
 
 ## Key Transparency offers tamper-evident key discovery
 
-Key Transparency is a design for a tamper-evident key discovery service that providers of end-to-end encryption services could implement. Key Transparency solves [the problem of key discovery](#background-the-problem-with-end-to-end-encryption) using Trillian's Map Mode.
+Key Transparency is a design for a tamper-evident key discovery service that providers of end-to-end encryption services could implement. Key Transparency solves [the problem of key discovery](#background-the-problem-with-end-to-end-encryption) using a verifiable index.
 
 ## Advantages of Key Transparency
 
@@ -37,9 +37,9 @@ Key Transparency is a design for a tamper-evident key discovery service that pro
 
 </div>
 
-## Key Transparency uses Trillian's Experimental Map Mode
+## Key Transparency uses a verifiable index
 
-Key Transparency uses Trillian's experimental map mode, rather than the more common log mode. Specifically, Key Transparency uses a [log-backed map]({{< relref "/verifiable-data-structures#log-backed-map" >}}) which is a [verifiable map]({{< relref "/verifiable-data-structures#verifiable-map" >}}) combined with a [verifiable log]({{< relref "/verifiable-data-structures#verifiable-log" >}}).
+Key Transparency uses a verifiable index — a data structure that maps keys (like usernames or phone numbers) to values (like public keys) in a way that is tamper-evident and auditable. The [transparency-dev incubator](https://github.com/transparency-dev/incubator) hosts **vindex**, an experimental implementation of this pattern built on top of a [verifiable log]({{< relref "/verifiable-data-structures#verifiable-log" >}}).
 
 ### Key discovery with Key Transparency
 
@@ -51,11 +51,11 @@ When Bob wants to send Alice an encrypted message:
 
 1. Alice's app uploads her mobile number and public key to the key server.
 
-   The key server calculates a special hash on the mobile number and stores the public key in a “log-backed map” - a data structure which links mobile numbers to public keys.
+   The key server calculates a special hash on the mobile number and stores the public key in a “verifiable index” - a data structure which links mobile numbers to public keys.
 
 2. Alice's app asks the key server for its own public key.
 
-   The key server calculates the hash of the mobile number and uses it to locate the public key in the log-backed map. It returns the public key along with additional data that can be used to verify the map.
+   The key server calculates the hash of the mobile number and uses it to locate the public key in the verifiable index. It returns the public key along with additional data that can be used to verify the map.
 
 3. The app ensures that the public key matches its local key.
 
@@ -79,7 +79,7 @@ Terms:
 * **Phone number** - used by other users to identify the person.
 * **Account** - the link between the app and the users' phone number. For example, a user has a WhatsApp account after they receive an SMS from WhatsApp proving they control the number.
 * **Public key** - the public part of the keys used by other users to encrypt messages to the user.
-* **Key server** - a server which implements the Key Transparency pattern as a Trillian personality.
+* **Key server** - a server which implements the Key Transparency pattern using a verifiable index.
 
 ## Users can check they're seeing the same public key
 
@@ -92,7 +92,7 @@ As with all verifiable data structures, it's important they are monitored for co
 ## Misbehaviour by key servers is permanently logged
 
 A key server can try and lie about a user's public keys but if the gossip system works, two apps will discover mismatching map heads which is suspicious.
-Because keys are stored in a log-backed map, all changes to the map go into a verifiable log. This means that if a server lies about a key, even for a short time, there's a permanent record in the log.
+Because keys are stored in a verifiable index, all changes to the map go into a verifiable log. This means that if a server lies about a key, even for a short time, there's a permanent record in the log.
 
 ## Background: the problem with end-to-end encryption
 
@@ -118,8 +118,8 @@ Users can't trust in the good intentions of their provider. As well as the risk 
 
 * [CONIKS homepage](https://coniks.cs.princeton.edu/about.html)
   CONIKS inspired Key Transparency. The original paper is good background reading: [CONIKS: Bringing Key Transparency to End Users](https://eprint.iacr.org/2014/1004.pdf).
-* [Key Transparency Overview](https://github.com/google/keytransparency/blob/master/docs/overview.md)
-  Introduces Key Transparency. The [design document](https://github.com/google/keytransparency/blob/master/docs/design.md) and [verification algorithm](https://github.com/google/keytransparency/blob/master/docs/verification.md) page are particularly important.
+* [vindex in the transparency-dev incubator](https://github.com/transparency-dev/incubator)
+  An experimental verifiable index implementation built on top of a transparency log.
 * ["Ghost trace on the wire? Using key evidence for informed decisions"](https://www.cl.cam.ac.uk/~arb33/papers/VasileEtAl-GhostsOnTheWire-SecurityProtocols2019.pdf)
   University of Cambridge - proposes an alternative solution to compare mappings between usernames and public keys by gossiping with other users on the same WiFi network.
 
