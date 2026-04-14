@@ -2,7 +2,7 @@
 url: /verifiable-data-structures
 layout: index
 title: Verifiable Data Structures
-description: An overview of Trillian's verifiable log, verifiable map and log-backed map as well as links to further resources.
+description: An overview of verifiable logs and links to further resources.
 ---
 <section class="glue-page gmt-6 gmb-4">
 
@@ -17,7 +17,7 @@ description: An overview of Trillian's verifiable log, verifiable map and log-ba
       <h2 class="headline3 gmb-3">Verifiable log</h2>
 
       <p class="gmb-3">
-        Trillian uses a Merkle tree to implement a verifiable log.
+        A verifiable log uses a Merkle tree to store records.
       </p>
       <p class="gmb-3">
         Every record inserted into a verifiable log is added as a new leaf in the Merkle tree. In the diagram <span class="md:hidden"> above</span><span class="hidden md:inline-block">on the right</span>, the four records are shown along the bottom.
@@ -53,8 +53,7 @@ description: An overview of Trillian's verifiable log, verifiable map and log-ba
     <aside class="col-span-4 sm:col-span-8 md:col-start-9 md:row-start-1 md:col-span-3 submenu gmb-4 md:mb-0 md:flex-shrink md:h-0">
       <ul id="section-links-list" class="bg-Grey-100">
           <li><a href="#verifiable-log">Verifiable log</a></li>
-          <li><a href="#verifiable-map">Verifiable map</a></li>
-          <li><a href="#log-backed-map">Log-backed map</a></li>
+          <li><a href="#verifiable-index">Verifiable index</a></li>
           <li><a href="#resources">Resources</a></li>
       </ul>
     </aside>
@@ -68,16 +67,16 @@ description: An overview of Trillian's verifiable log, verifiable map and log-ba
       <a id="signed-tree-head" class="gpt-4"></a>
       <h3 class="headline5 font-bold gpt-4 gmb-3">Signed tree head</h3>
       <p class="gmb-3">
-        Trillian always signs tree head hashes with a private key and this is called the <em>signed tree head</em>.
+        Verifiable logs sign tree head hashes with a private key — this is called the <em>signed tree head</em>.
       </p>
       <p class="gmb-3">
-        Before trusting a tree head hash from Trillian, clients verify it using a public key that's typically published separately, depending on the application.
+        Before trusting a tree head hash, clients verify it using a public key that's typically published separately, depending on the application.
       </p>
       <p class="gmb-3">
         This serves two purposes:
       </p>
       <ul class="list-disc-blue gmb-3">
-        <li>protects against tampering with the communication between Trillian and the client.</li>
+        <li>protects against tampering with the communication between the log and the client.</li>
         <li>acts as a commitment to each tree head hash, making misbehaviour undeniable.</li>
       </ul>
 
@@ -88,7 +87,7 @@ description: An overview of Trillian's verifiable log, verifiable map and log-ba
   <div class="glue-grid">
     <div class="vds-col-left">
       <p class="gmb-3">
-        When a client gets a record from Trillian, it mustn't simply trust the record. Instead, it requests an inclusion proof from the log and verifies that the proof is valid. This links the content of that record back to a tree head hash.
+        When a client gets a record from the log, it mustn't simply trust the record. Instead, it requests an inclusion proof from the log and verifies that the proof is valid. This links the content of that record back to a tree head hash.
       </p>
       <p class="gmb-3">
         The client calculates the hash of the record and the chain of hashes up the tree to the tree head hash.
@@ -245,72 +244,15 @@ description: An overview of Trillian's verifiable log, verifiable map and log-ba
         <li>Clients should store copies of historical tree head hashes, assist with future audits (as well as carry out their own consistency proofs)</li>
       </ol>
 
-      <a id="verifiable-map" class="gpt-4"></a>
-      <h2 class="headline3 gpt-6 gmb-3">Verifiable map</h2>
+      <a id="verifiable-index" class="gpt-4"></a>
+      <h2 class="headline3 gpt-6 gmb-3">Verifiable index</h2>
 
       <p class="gmb-3">
-        While Trillian primarily acts as a verifiable log, it also has an experimental map mode. This allows storing key-value pairs in a verifiable way.
+        A verifiable index allows looking up values by key in a tamper-evident way. Unlike a verifiable log, which is append-only, a verifiable index maps keys to values while maintaining cryptographic proofs of correctness.
       </p>
       <p class="gmb-3">
-        In map mode, Trillian arranges the Merkle tree differently from log mode. Rather than dynamically growing the tree as new log entries are added, the tree is a fixed size.
+        The <a href="https://github.com/transparency-dev/incubator">transparency-dev incubator</a> hosts <strong>vindex</strong>, an experimental verifiable index built on top of a transparency log.
       </p>
-      <p class="gmb-3">
-        A hash function is agreed in advance, for example SHA256, which is applied to any key entered into the map.
-      </p>
-      <p class="gmb-3">
-        The tree is arranged so every leaf of the tree represents a particular value of the hash function. That means a given key always results in exactly the same leaf location in the tree.
-      </p>
-      <p class="gmb-3">
-        To find the leaf, you calculate the hash of the key, giving 256 bits (each can be 1 or 0). Starting at the top, you descend the tree and for each bit of the hash value you turn either "left" or "right" (1 or 0). This leads directly to the leaf that contains the public key.
-      </p>
-    </div>
-  </div>
-
-  <div class="glue-grid">
-    <div class="vds-col-left">
-      <p class="gmb-3">
-        In this example, suppose you want to store data against the key
-      </p>
-      <pre class="gmb-3">"hello@example.com"</pre>
-      <p class="gmb-3">
-        You calculate the SHA256 hash of "hello@example.com", giving 256 binary bits:
-      </p>
-      <pre>1011101010011101111011011001101101000001001110001101001111000010110001000011111011101101111111011100100100110000101100100111100101111011111000110101010001000111101100000100111000000011111111111000001000000000111000101010101110010100101010101001000000110</pre>
-      <p class="gmb-3">
-        You descend the tree one level per bit, turning right or left for 0 and 1.
-      </p>
-      <p class="gmb-3">
-        After 256 levels you reach the record that represents the value associated with the key "hello@example.com"
-      </p>
-      <p class="gmb-3">
-        As with a log, the single map head hash is like a snapshot of the entire map. As with a log, you can perform an inclusion proof against a map head hash, verifying that the value associated with the key is really in the map.
-      </p>
-      <p class="gmb-3">
-        Clearly, 2<sup>256</sup> possible keys is far too many keys to actually store. For more details, including how that works, refer to the whitepaper.
-      </p>
-    </div>
-<!--
-    <div class="vds-col-right">
-      <img src="{{< rel "/images/merkle-trees/merkle-tree-a-b-d-f-ghost-e.svg" >}}" class="w-full gmb-4 " />
-      <p class="figure-label text-center sm:text-left text-Grey-600">Tree 4</p>
-    </div> -->
-  </div>
-
-  <div class="glue-grid">
-    <div class="vds-col-left">
-      <a id="log-backed-map" class="gpt-4"></a>
-      <h2 class="headline3 gpt-6 gmb-3">Log-backed map</h2>
-
-      <p class="gmb-3">
-        A verifiable map has limitations which can be addressed by combining a verifiable map with a verifiable log. Any changes to the verifiable map are entered into a verifiable log, and only when present in the log are they applied to the verifiable map. This allows proving the correct operation over time.
-      </p>
-      <p class="gmb-3">
-        This is the data structure currently used by Key Transparency.
-      </p>
-      <p class="gmb-3">
-        The Verifiable Data Structures whitepaper discusses the limitations of a verifiable map, and how a log-backed map addresses these.
-      </p>
-
 
       <a id="resources" class="gpt-4"></a>
       <h2 class="headline3 gpt-6 gmb-3">Resources</h2>
@@ -320,15 +262,8 @@ description: An overview of Trillian's verifiable log, verifiable map and log-ba
           <a href="https://github.com/google/trillian/blob/master/docs/papers/VerifiableDataStructures.pdf">Verifiable Data Structures whitepaper</a>
         </li>
         <li>
-          <a href="https://github.com/google/trillian/blob/master/README.md">Trillian project README</a><br />
-          See sections on
-          <a href="https://github.com/google/trillian/blob/master/README.md#log-mode">Log Mode</a>,
-          <a href="https://github.com/google/trillian/blob/master/README.md#map-mode">Map Mode</a>,
-          <a href="https://github.com/google/trillian/blob/master/README.md#verifiable-log-backed-map">Verifiable Log-Backed Map</a>
-        </li>
-        <li>
-          <a href="https://github.com/google/keytransparency/blob/master/docs/verification.md#verification-steps">Key Transparency: verification steps</a><br />
-          Illustrates how a log-backed map is verified
+          <a href="https://github.com/transparency-dev/tessera">Tessera project README</a><br />
+          Tessera is the recommended library for building tile-based transparency logs.
         </li>
       </ul>
 
